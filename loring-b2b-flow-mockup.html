@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loring · Distributor order flow — interactive Shopify mockup</title>
+<style>
+:root{
+  --page:#f1f1f1;--surface:#fff;--surface-2:#fafafa;--nav:#ebebeb;--bar:#1a1a1a;--bar-2:#303030;
+  --text:#303030;--sub:#616161;--line:#e3e3e3;--line-2:#ebebeb;--link:#005bd3;
+  --ok-bg:#cdfee1;--ok:#0c5132;--warn-bg:#ffd6a4;--warn:#5e4200;--info-bg:#e0f0ff;--info:#00527c;--crit-bg:#fee9e8;--crit:#8e1f0b;--att-bg:#ffef9d;--att:#4f4700;
+  --sf-bg:#fff;--sf-text:#1f1f1f;--sf-sub:#6b6b6b;--sf-line:#e6e6e6;--sf-accent:#2f3b2f;--sf-tile:#efece6;
+  --frame:#d9d9d9;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--frame:#0f0f0f}}
+:root[data-theme="dark"]{--frame:#0f0f0f}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:13px;line-height:20px;color:var(--text);background:var(--frame);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}
+button{font:inherit;cursor:pointer}
+input{font:inherit}
+
+/* demo frame */
+.frame{max-width:1440px;margin:0 auto;min-height:100%;background:var(--page);display:flex;flex-direction:column}
+.switch{background:#0b0b0b;color:#e3e3e3;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;gap:16px;flex-wrap:wrap}
+.switch .who{font-size:12px;color:#9a9a9a}
+.seg{display:flex;background:#1f1f1f;border-radius:10px;padding:3px;gap:2px}
+.seg button{background:transparent;border:0;color:#b5b5b5;padding:6px 14px;border-radius:8px;font-weight:600;font-size:12px}
+.seg button.on{background:#fff;color:#1a1a1a}
+.seg button:focus-visible,.btn:focus-visible,.ni:focus-visible,input:focus-visible{outline:2px solid #005bd3;outline-offset:1px}
+
+/* admin */
+.top{height:56px;background:var(--bar);display:flex;align-items:center;padding:0 16px;gap:16px}
+.brand{display:flex;align-items:center;gap:8px;color:#fff;font-weight:700;font-size:14px;width:224px}
+.brand .lg{width:24px;height:24px;border-radius:6px;background:var(--sf-accent);display:flex;align-items:center;justify-content:center;font-size:11px}
+.search{flex:1;display:flex;justify-content:center}
+.search div{width:min(560px,100%);height:32px;border-radius:8px;background:var(--bar-2);display:flex;align-items:center;gap:8px;padding:0 10px;color:#b5b5b5}
+.user{display:flex;align-items:center;gap:12px;width:224px;justify-content:flex-end}
+.user .pill{height:28px;padding:0 10px 0 4px;border-radius:8px;background:var(--bar-2);color:#e3e3e3;display:flex;align-items:center;gap:8px;font-weight:600}
+.user .av{width:20px;height:20px;border-radius:6px;background:#a0e3c4;color:#0c5132;font-size:10px;display:flex;align-items:center;justify-content:center}
+.body{display:flex;flex:1;min-height:0}
+.nav{width:240px;flex-shrink:0;background:var(--nav);padding:12px;display:flex;flex-direction:column;gap:2px}
+.ni{display:flex;align-items:center;gap:8px;height:32px;padding:0 8px;border-radius:8px;font-weight:600;font-size:13px;color:var(--text);border:0;background:transparent;text-align:left;width:100%}
+.ni:hover{background:#f1f1f1}
+.ni.on{background:var(--surface-2);box-shadow:0 1px 0 rgba(0,0,0,.06)}
+.ni.sub{padding-left:32px;font-weight:500;color:var(--sub)}
+.ni.sub.on{color:var(--text)}
+.ni .cnt{margin-left:auto;font-size:12px;color:var(--sub);font-weight:500}
+.nh{font-size:12px;font-weight:600;color:var(--sub);padding:16px 8px 4px}
+.main{flex:1;min-width:0;padding:24px 32px}
+.wrap{max-width:998px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.ph{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.ph h1{margin:0;font-size:20px;line-height:24px;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ph .acts{display:flex;gap:8px;flex-wrap:wrap}
+.card{background:var(--surface);border-radius:12px;box-shadow:0 1px 0 rgba(26,26,26,.07),0 0 0 1px var(--line)}
+.card .hd{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.card .hd b{font-weight:600}
+.card .ft{padding:12px 16px;border-top:1px solid var(--line)}
+.card .pd{padding:16px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:12px;font-weight:500;color:var(--sub);padding:8px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tr.row:hover td{background:#f7f7f7;cursor:pointer}
+.r{text-align:right}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
+.sub{color:var(--sub)}
+.badge{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 8px;border-radius:8px;font-size:12px;font-weight:500;background:var(--line);color:var(--text);white-space:nowrap}
+.b-ok{background:var(--ok-bg);color:var(--ok)}.b-warn{background:var(--warn-bg);color:var(--warn)}.b-info{background:var(--info-bg);color:var(--info)}.b-crit{background:var(--crit-bg);color:var(--crit)}.b-att{background:var(--att-bg);color:var(--att)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:28px;padding:0 12px;border-radius:8px;border:1px solid #c9c9c9;background:#fff;font-weight:600;font-size:12px;color:var(--text);box-shadow:0 -1px 0 0 #b5b5b5 inset}
+.btn:hover{background:#fafafa}
+.btn-p{background:#303030;color:#fff;border-color:#303030;box-shadow:none}.btn-p:hover{background:#1a1a1a}
+.btn-c{background:#fff;color:#8e1f0b;border-color:#e3b1ab}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.kv{display:flex;justify-content:space-between;gap:12px}
+.cols{display:flex;gap:16px;align-items:flex-start}
+.cols .l{flex:1;min-width:0;display:flex;flex-direction:column;gap:16px}
+.cols .s{width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:16px}
+.ban{padding:12px 16px;display:flex;gap:12px;align-items:flex-start;border-radius:12px}
+.ban.info{background:var(--info-bg);color:var(--info);box-shadow:0 0 0 1px #b4d6f6}
+.ban.ok{background:var(--ok-bg);color:var(--ok);box-shadow:0 0 0 1px #9ee2bb}
+.ban.warn{background:#fff4e5;color:var(--warn);box-shadow:0 0 0 1px var(--warn-bg)}
+.ban.crit{background:var(--crit-bg);color:var(--crit);box-shadow:0 0 0 1px #f3b6b0}
+.ban svg{flex-shrink:0;margin-top:2px}
+.tl{display:flex;flex-direction:column;gap:12px}
+.tl .it{display:flex;gap:12px}
+.tl .dot{width:8px;height:8px;border-radius:50%;background:#8a8a8a;flex-shrink:0;margin-top:6px}
+.stat{display:flex;gap:24px;flex-wrap:wrap}
+.stat .sub{font-size:12px}.stat b{font-size:16px;font-weight:600;display:block}
+.tabs{display:flex;gap:4px;padding:8px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{height:28px;padding:0 12px;border-radius:8px;display:inline-flex;align-items:center;gap:6px;font-weight:500;color:var(--sub);border:0;background:transparent}
+.tab.on{background:var(--page);color:var(--text);font-weight:600}
+.num{width:72px;height:32px;border:1px solid #8a8a8a;border-radius:8px;padding:0 10px;text-align:right;background:#fff}
+.txt{height:32px;border:1px solid #8a8a8a;border-radius:8px;padding:0 12px;width:100%;background:#fff}
+.tog{width:32px;height:20px;border-radius:10px;background:#303030;position:relative;flex-shrink:0;border:0}
+.tog::after{content:"";position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:#fff}
+.tog.off{background:#c9c9c9}.tog.off::after{right:14px}
+.node{width:200px;border-radius:10px;background:#fff;box-shadow:0 0 0 1px #d4d4d4,0 2px 4px rgba(0,0,0,.06);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.node .nt{padding:6px 12px;font-size:11px;font-weight:600;color:#fff}
+.node .nb{padding:8px 12px}
+.arrow{width:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#8a8a8a}
+.flowrow{display:flex;align-items:stretch;overflow-x:auto;padding-bottom:4px}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.step{border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px;background:var(--surface-2)}
+.step.done{border-color:#9ee2bb;background:#f2fbf5}
+.step .n{width:24px;height:24px;border-radius:50%;background:#303030;color:#fff;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center}
+.step.done .n{background:#0c5132}
+
+/* storefront */
+.sf{background:var(--sf-bg);color:var(--sf-text);font-size:14px;min-height:100%;display:flex;flex-direction:column}
+.sf-strip{height:36px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:13px}
+.sf-hd{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 56px;border-bottom:1px solid var(--sf-line);gap:16px}
+.sf-hd .lg{font-size:22px;font-weight:700}.sf-hd .lg span{font-weight:400;color:var(--sf-sub)}
+.sf-hd nav{display:flex;gap:32px;font-size:15px;font-weight:500}
+.sf-hd nav a{color:var(--sf-text)}
+.sf-hd nav a.on{border-bottom:2px solid var(--sf-text);padding-bottom:4px}
+.sf-main{flex:1;display:flex;gap:40px;padding:32px 56px 40px}
+.sf table th{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:none;color:var(--sf-sub);border-bottom:1px solid #dcdcdc;padding:10px 12px}
+.sf table td{padding:14px 12px;border-bottom:1px solid #ececec}
+.sf .qty{width:72px;height:36px;border:1px solid #c8c8c8;border-radius:6px;padding:0 10px;text-align:center}
+.sf .tile{width:44px;height:44px;border-radius:6px;background:var(--sf-tile);flex-shrink:0}
+.sf-btn{display:inline-flex;align-items:center;justify-content:center;height:48px;padding:0 24px;border-radius:6px;border:1px solid var(--sf-text);background:var(--sf-text);color:#fff;font-weight:600;font-size:15px;width:100%}
+.sf-btn.o{background:#fff;color:var(--sf-text)}
+.sf-btn:disabled{opacity:.5;cursor:not-allowed}
+.sf .box{border:1px solid #dcdcdc;border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:14px}
+.sf input.txt{border-color:#c8c8c8;border-radius:6px;height:44px}
+.stock{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:8px;font-weight:600}
+.stock.in{background:#edf7ef;color:#1e5c2e}.stock.low{background:#fff4e5;color:#6b4a00}.stock.out{background:#fdecea;color:#8e1f0b}
+
+/* live retail widget */
+.live{position:fixed;right:20px;bottom:20px;width:300px;background:#1a1a1a;color:#e3e3e3;border-radius:12px;padding:14px 16px;box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:12px;z-index:20;display:flex;flex-direction:column;gap:6px}
+.live .t{font-weight:700;color:#fff;display:flex;justify-content:space-between}
+.live .big{font-size:22px;font-weight:700;color:#fff}
+.live .d{color:#9a9a9a}
+.live.flash{animation:flash .6s}
+@keyframes flash{0%{box-shadow:0 0 0 4px #ffd6a4}100%{box-shadow:0 8px 24px rgba(0,0,0,.25)}}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:30;padding:20px}
+.modal .box{background:#fff;border-radius:12px;width:520px;max-width:100%;padding:20px;display:flex;flex-direction:column;gap:14px;color:var(--text)}
+.modal h2{margin:0;font-size:16px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#303030;color:#fff;padding:10px 16px;border-radius:8px;font-weight:600;z-index:25;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+
+@media (max-width:900px){.nav{display:none}.main{padding:16px}.sf-main{flex-direction:column;padding:24px 20px}.sf-hd{padding:0 20px}.cols{flex-direction:column}.cols .s{width:100%}.live{width:calc(100% - 40px);right:20px}.brand span,.user .pill span{display:none}.brand,.user{width:auto}.steps{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.live.flash{animation:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ---------------- data ---------------- */
+const PRODUCTS = [
+  {sku:'BRN-S35-A', name:'Burner assembly',        variant:'S35 · 208V',    onHand:62,  floor:12, retail:520.00, dist:312.00, lead:'6–8 wk'},
+  {sku:'BRN-S35-B', name:'Burner assembly',        variant:'S35 · 480V',    onHand:9,   floor:8,  retail:520.00, dist:312.00, lead:'6–8 wk'},
+  {sku:'BRG-S35-K', name:'Drum bearing kit',       variant:'S35',           onHand:140, floor:40, retail:245.00, dist:148.00, lead:'3–4 wk'},
+  {sku:'IGN-EL-02', name:'Ignition electrode',     variant:'All models',    onHand:30,  floor:20, retail:78.00,  dist:46.00,  lead:'2 wk'},
+  {sku:'GSK-CYC-01',name:'Chaff cyclone gasket set',variant:'S35 / S70',    onHand:25,  floor:25, retail:49.00,  dist:28.50,  lead:'2 wk'},
+  {sku:'TC-K-300',  name:'Thermocouple probe',     variant:'Type K · 300 mm',onHand:4,  floor:10, retail:62.00,  dist:38.00,  lead:'1 wk'},
+];
+const COMPANY = {name:'Nordkaffee Distribution GmbH', loc:'Hamburg', tier:'EU Tier 1', terms:'Net 30', ship:'Lager Hamburg-Billbrook, Hamburg, Germany'};
+
+function fresh(){
+  return {
+    view:'portal', page:'home', draftId:null,
+    products: PRODUCTS.map(p=>({...p})),
+    cart: {'BRN-S35-A':200,'BRG-S35-K':80,'IGN-EL-02':120,'GSK-CYC-01':300},
+    buyerPO:'NK-4471',
+    drafts: [
+      {id:'D1041', company:'Roast Supply Co.', loc:'Melbourne · APAC Tier 2', po:'RSC-2209', when:'Yesterday, 4:38 pm', status:'awaiting', lines:[{sku:'BRG-S35-K',qty:20},{sku:'TC-K-300',qty:0}], seed:true, total:6120, check:'All lines in stock', poBadge:'Not needed', poCls:''},
+      {id:'D1038', company:'Café Equipos SA', loc:'Bogotá · LATAM Tier 1', po:'CE-0912', when:'Sep 4', status:'awaiting', seed:true, total:23480, check:'1 of 3 lines short', poBadge:'PO-0214 sent', poCls:'b-info'},
+      {id:'D1033', company:'Tostadores del Norte', loc:'Monterrey · LATAM Tier 1', po:'TDN-118', when:'Aug 22', status:'ready', seed:true, total:41900, check:'Shortfall received', poBadge:'PO-0209 received', poCls:'b-ok'},
+    ],
+    pos: [], orders: [], log: [], nextPO:217, reserved:false, toast:null, modal:null, flash:false,
+    rules:{manual:true, autoPO:true, warnReserve:true, lowStock:true, unlockEarly:false},
+  };
+}
+let S = fresh();
+
+const money = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const prod = sku => S.products.find(p=>p.sku===sku);
+const now = () => { const d=new Date(); return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); };
+const stamp = (who, text) => S.log.unshift({who, text, t: now()});
+
+/* the formula the whole build rests on */
+function floorCheck(lines){
+  return lines.map(l=>{
+    const p = prod(l.sku);
+    const above = Math.max(0, p.onHand - p.floor);
+    const ships = Math.min(l.qty, above);
+    return {...l, onHand:p.onHand, floor:p.floor, ships, build: l.qty - ships};
+  });
+}
+
+/* ---------------- actions ---------------- */
+const A = {
+  view(v){ S.view=v; },
+  go(p, id){ S.view='admin'; S.page=p; if(id) S.draftId=id; },
+  qty(sku, v){ S.cart[sku]=Math.max(0, parseInt(v)||0); },
+  po(v){ S.buyerPO=v; },
+  submit(){
+    const lines = Object.entries(S.cart).filter(([,q])=>q>0).map(([sku,qty])=>({sku,qty}));
+    if(!lines.length) return;
+    const d = {id:'D1042', company:COMPANY.name, loc:`${COMPANY.loc} · ${COMPANY.tier}`, po:S.buyerPO||'—', when:'Today, '+now(), status:'awaiting', lines, tags:['B2B']};
+    d.total = lines.reduce((s,l)=>s+l.qty*prod(l.sku).dist,0);
+    stamp('Online Store', `Draft #${d.id} submitted for approval by buyer at ${COMPANY.name} · PO ${d.po}`);
+    stamp('Shopify Flow', 'Tagged B2B, awaiting-po · parts team notified');
+    d.tags.push('awaiting-po');
+    d.check = floorCheck(lines);
+    const short = d.check.filter(c=>c.build>0);
+    stamp('Floor Guard', `Retail floor check complete · ${short.length} of ${lines.length} lines short`);
+    if(short.length && S.rules.autoPO){
+      const po = {id:'PO-0'+S.nextPO++, draftId:d.id, status:'sent', lines: short.map(c=>({sku:c.sku, ordered:c.qty, covered:c.ships, build:c.build, received:0}))};
+      S.pos.unshift(po); d.poId = po.id;
+      stamp('Floor Guard', `${po.id} emailed to production@loring.com · ${short.reduce((s,c)=>s+c.build,0)} units across ${short.length} lines`);
+    }
+    S.drafts.unshift(d);
+    S.view='admin'; S.page='draft'; S.draftId=d.id;
+    A.toast(`Draft #${d.id} created · retail stock unchanged`);
+  },
+  rerun(id){ const d=S.drafts.find(x=>x.id===id); d.check=floorCheck(d.lines); stamp('Floor Guard','Retail floor check re-run'); A.toast('Check re-run'); },
+  receive(poId){
+    const po=S.pos.find(p=>p.id===poId); if(!po||po.status==='received') return;
+    po.lines.forEach(l=>{ l.received=l.build; prod(l.sku).onHand += l.build; });
+    po.status='received';
+    const d=S.drafts.find(x=>x.id===po.draftId); d.status='ready'; d.tags=(d.tags||[]).filter(t=>t!=='awaiting-po').concat('po-received');
+    stamp('Floor Guard', `${po.id} marked received · ${po.lines.reduce((s,l)=>s+l.build,0)} units added to Loring warehouse · draft #${d.id} ready to convert`);
+    S.flash=true; S.page='draft'; S.draftId=d.id;
+    A.toast('PO received · Create order unlocked');
+  },
+  convert(id){
+    const d=S.drafts.find(x=>x.id===id);
+    if(d.status!=='ready' && !S.rules.unlockEarly) return;
+    d.lines.forEach(l=>{ prod(l.sku).onHand -= l.qty; });
+    d.status='converted';
+    const o={id:'#1893', draftId:d.id, company:d.company, po:d.po, lines:d.lines, total:d.total, check:d.check};
+    S.orders.unshift(o); d.orderId=o.id;
+    stamp('Kristen', `Order ${o.id} created from draft #${d.id} · ${d.lines.reduce((s,l)=>s+l.qty,0)} units committed`);
+    S.flash=true; S.page='order';
+    A.toast('Order created · inventory committed now');
+  },
+  reserveAsk(){ S.modal='reserve'; },
+  reserveDo(){
+    const d=S.drafts.find(x=>x.id===S.draftId);
+    d.lines.forEach(l=>{ prod(l.sku).onHand -= l.qty; });
+    S.reserved=true; S.modal=null; S.flash=true;
+    stamp('Kristen', 'Reserve inventory clicked on B2B draft — stock committed early');
+    A.toast('Reserved. Watch the retail storefront.');
+  },
+  reserveUndo(){
+    const d=S.drafts.find(x=>x.id===S.draftId);
+    d.lines.forEach(l=>{ prod(l.sku).onHand += l.qty; });
+    S.reserved=false; S.flash=true;
+    stamp('Kristen','Reservation removed · stock visible to retail again');
+    A.toast('Reservation removed');
+  },
+  floor(sku, v){ prod(sku).floor=Math.max(0,parseInt(v)||0); },
+  rule(k){ S.rules[k]=!S.rules[k]; },
+  close(){ S.modal=null; },
+  reset(){ S=fresh(); A.toast('Demo reset'); },
+  toast(t){ S.toast=t; clearTimeout(A._t); A._t=setTimeout(()=>{S.toast=null; render();},2200); },
+};
+
+/* ---------------- pieces ---------------- */
+const I = {
+  search:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>',
+  bell:'<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="#e3e3e3" stroke-width="1.5"><path d="M4 6.5a4 4 0 0 1 8 0v3l1 2H3l1-2z"/><path d="M6.5 13a1.5 1.5 0 0 0 3 0"/></svg>',
+  home:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 7.5 8 3l5.5 4.5V13a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1z"/></svg>',
+  orders:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2.5" width="10" height="11" rx="1.5"/><path d="M5.5 6h5M5.5 9h5"/></svg>',
+  products:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5.5 8 3l5 2.5v5L8 13l-5-2.5z"/><path d="M3 5.5 8 8l5-2.5M8 8v5"/></svg>',
+  customers:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5.5" r="2.5"/><path d="M3 13.5c.7-2.5 2.5-3.5 5-3.5s4.3 1 5 3.5"/></svg>',
+  analytics:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 13V8M8 13V3M13 13V6"/></svg>',
+  store:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 6.5h11l-1-3h-9zM3.5 6.5V13h9V6.5"/></svg>',
+  guard:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5v3M8 10.5v3M2.5 8h3M10.5 8h3"/><circle cx="8" cy="8" r="2.5"/></svg>',
+  flow:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="2.5" width="4" height="4" rx="1"/><rect x="9.5" y="9.5" width="4" height="4" rx="1"/><path d="M6.5 4.5h3a2 2 0 0 1 2 2v3"/></svg>',
+  qb:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12V4h10v8zM3 7h10"/></svg>',
+  info:'<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7v4M8 5v.01"/></svg>',
+  warn:'<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5 14 13H2z"/><path d="M8 6.5v3M8 11v.01"/></svg>',
+  check:'<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8.5 6.5 12 13 4.5"/></svg>',
+  back:'<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3 5 8l5 5"/></svg>',
+  arrow:'<svg width="24" height="16" viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M0 8h22M17 3l5 5-5 5"/></svg>',
+  cart:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h12l-1 9H5z"/><path d="M7.5 6V5a2.5 2.5 0 0 1 5 0v1"/></svg>',
+};
+const badge = (t, c='') => `<span class="badge ${c}">${t}</span>`;
+const pcell = p => `<div style="display:flex;gap:10px;align-items:center"><div style="width:32px;height:32px;border-radius:6px;background:#efece6;flex-shrink:0"></div><div><div style="font-weight:500">${p.name}</div><div class="sub">${p.variant}</div></div></div>`;
+
+function nav(){
+  const drafts = S.drafts.filter(d=>d.status!=='converted').length;
+  const on = p => S.page===p?'on':'';
+  return `<nav class="nav" aria-label="Admin">
+    <button class="ni ${on('home')}" data-go="home">${I.home}Home</button>
+    <button class="ni ${S.page==='drafts'||S.page==='draft'||S.page==='order'?'on':''}" data-go="drafts">${I.orders}Orders<span class="cnt">${14+S.orders.length}</span></button>
+    <button class="ni sub ${on('drafts')||on('draft')}" data-go="drafts">Drafts<span class="cnt">${drafts}</span></button>
+    <button class="ni" data-go="home">${I.products}Products</button>
+    <button class="ni" data-go="home">${I.customers}Customers</button>
+    <button class="ni sub" data-go="home">Companies</button>
+    <button class="ni" data-go="home">${I.analytics}Analytics</button>
+    <div class="nh">Sales channels</div>
+    <button class="ni" data-view="retail">${I.store}Online Store</button>
+    <div class="nh">Apps</div>
+    <button class="ni ${on('pos')||on('floors')}" data-go="pos">${I.guard}Floor Guard</button>
+    <button class="ni sub ${on('pos')}" data-go="pos">Production POs<span class="cnt">${S.pos.length}</span></button>
+    <button class="ni sub ${on('floors')}" data-go="floors">Retail floors</button>
+    <button class="ni ${on('flow')}" data-go="flow">${I.flow}Flow</button>
+    <button class="ni" data-go="home">${I.qb}Webgility · QuickBooks</button>
+  </nav>`;
+}
+
+function adminShell(inner){
+  return `<div class="top">
+    <div class="brand"><div class="lg">LS</div><span>Loring Smart Roast</span></div>
+    <div class="search"><div>${I.search}<span>Search</span></div></div>
+    <div class="user">${I.bell}<div class="pill"><div class="av">KT</div><span>Kristen</span></div></div>
+  </div>
+  <div class="body">${nav()}<main class="main"><div class="wrap">${inner}</div></main></div>`;
+}
+
+/* ---------------- admin pages ---------------- */
+function pageHome(){
+  const d = S.drafts.find(x=>x.id==='D1042');
+  const po = d && S.pos.find(p=>p.draftId===d.id);
+  const steps = [
+    {t:'Distributor submits', d:'Buyer places 700 units in the portal. It lands as a draft — nothing is charged, nothing is committed.', done:!!d, act: d?null:`<button class="btn btn-p" data-view="portal">Open distributor portal</button>`},
+    {t:'Floor Guard nets the shortfall', d:'Each line is compared against stock above the protected retail floor. A production PO goes out for the difference.', done:!!po, act: d?`<button class="btn" data-go="draft" data-id="D1042">Open draft #D1042</button>`:null},
+    {t:'Production builds it', d:'Weeks pass. Retail keeps selling from the same pool. When the PO is marked received, the draft unlocks.', done:po&&po.status==='received', act: po&&po.status!=='received'?`<button class="btn btn-p" data-go="pos">Mark PO received</button>`:null},
+    {t:'A person approves', d:'Staff convert the draft to an order. Inventory is committed for the first time, 6–8 weeks after submission.', done:d&&d.status==='converted', act: d&&d.status==='ready'?`<button class="btn btn-p" data-go="draft" data-id="D1042">Approve draft</button>`:null},
+    {t:'Retail never noticed', d:'Check the Online Store view at any point — the burner count only changes when production stock arrives and the order is created.', done:d&&d.status==='converted', act:`<button class="btn" data-view="retail">Open retail storefront</button>`},
+    {t:'Reset and try the footgun', d:'On any draft, click "Reserve inventory" to see what happens if staff bypass the process.', done:false, act:`<button class="btn" data-act="reset">Reset demo</button>`},
+  ];
+  return `<div class="ph"><h1>Good morning, Kristen</h1><div class="acts"><button class="btn" data-act="reset">Reset demo</button></div></div>
+  <div class="ban info">${I.info}<div><b>This is an interactive mockup.</b> Every screen works: place the distributor order, watch the draft, receive the PO, approve. The dark panel bottom-right shows what retail customers see at the same moment — that number is the whole point.</div></div>
+  <div class="card"><div class="hd"><b>The distributor order flow</b><span class="sub">Follow the steps in order, or jump around</span></div>
+    <div class="pd"><div class="steps">${steps.map((s,i)=>`<div class="step ${s.done?'done':''}"><div style="display:flex;align-items:center;gap:8px"><div class="n">${s.done?'✓':i+1}</div><b>${s.t}</b></div><div class="sub">${s.d}</div>${s.act?`<div style="margin-top:4px">${s.act}</div>`:''}</div>`).join('')}</div></div>
+  </div>
+  <div class="cols"><div class="l">
+    <div class="card"><div class="hd"><b>Distributor drafts awaiting action</b></div><div class="tw"><table><thead><tr><th>Draft</th><th>Company</th><th>Status</th><th>Production</th><th class="r">Total</th></tr></thead><tbody>
+      ${S.drafts.filter(x=>x.status!=='converted').map(x=>`<tr class="row" data-go="draft" data-id="${x.id}"><td><a href="#">#${x.id}</a></td><td>${x.company}</td><td>${statusBadge(x)}</td><td>${poBadge(x)}</td><td class="r" style="font-weight:600">${money(x.total)}</td></tr>`).join('')}
+    </tbody></table></div></div>
+  </div><div class="s">
+    <div class="card pd" style="display:flex;flex-direction:column;gap:8px"><b>Retail floor status</b>
+      ${S.products.map(p=>`<div class="kv"><span class="sub">${p.name} <span class="mono">${p.sku}</span></span>${p.onHand<p.floor?badge('Below floor','b-warn'):p.onHand===p.floor?badge('At floor','b-att'):badge('Held','b-ok')}</div>`).join('')}
+      <button class="btn" data-go="floors" style="margin-top:4px">Edit floors</button></div>
+  </div></div>`;
+}
+
+function statusBadge(d){ return d.status==='awaiting'?badge('Awaiting approval','b-att'):d.status==='ready'?badge('Ready to convert','b-ok'):badge('Converted → '+d.orderId,'b-ok'); }
+function poBadge(d){
+  if(d.seed) return badge(d.poBadge, d.poCls);
+  const po = S.pos.find(p=>p.draftId===d.id);
+  if(!po) return badge('Not needed');
+  return po.status==='received'?badge(po.id+' received','b-ok'):badge(po.id+' sent','b-info');
+}
+function checkBadge(d){
+  if(d.seed) return badge(d.check, d.check.includes('short')?'b-warn':'b-ok');
+  const short=d.check.filter(c=>c.build>0).length;
+  return short?badge(`${short} of ${d.check.length} lines short`,'b-warn'):badge('All lines in stock','b-ok');
+}
+
+function pageDrafts(){
+  return `<div class="ph"><h1>Draft orders</h1><div class="acts"><button class="btn">Export</button><button class="btn btn-p">Create draft order</button></div></div>
+  <div class="card">
+    <div class="tabs"><button class="tab">All</button><button class="tab on">Distributor · awaiting approval ${badge(S.drafts.filter(d=>d.status==='awaiting').length,'b-warn')}</button><button class="tab">Ready to convert ${badge(S.drafts.filter(d=>d.status==='ready').length,'b-ok')}</button><button class="tab">Retail drafts</button></div>
+    <div class="tw"><table><thead><tr><th>Draft</th><th>Submitted</th><th>Company · location</th><th>Buyer PO</th><th>Status</th><th>Floor Guard</th><th>Production PO</th><th class="r">Total</th></tr></thead><tbody>
+    ${S.drafts.map(d=>`<tr class="row" data-go="draft" data-id="${d.id}"><td><a href="#" style="font-weight:600">#${d.id}</a></td><td>${d.when}</td><td><div style="font-weight:500">${d.company}</div><div class="sub">${d.loc}</div></td><td>${d.po}</td><td>${statusBadge(d)}</td><td>${checkBadge(d)}</td><td>${poBadge(d)}</td><td class="r" style="font-weight:600">${money(d.total)}</td></tr>`).join('')}
+    </tbody></table></div>
+    ${S.drafts.find(d=>d.id==='D1042')?'':`<div class="ft sub">No draft from Nordkaffee yet — <a href="#" data-view="portal">place the order from the distributor portal</a> to see one arrive here.</div>`}
+  </div>
+  <div class="ban info">${I.info}<div><b>Drafts don't commit inventory.</b> Retail availability is unchanged while these sit here. Stock is committed only when a draft is converted to an order.</div></div>`;
+}
+
+function pageDraft(){
+  const d=S.drafts.find(x=>x.id===S.draftId);
+  if(!d || d.seed) return `<div class="ph"><h1><button class="btn" data-go="drafts" aria-label="Back" style="width:28px;padding:0">${I.back}</button>#${S.draftId||''}</h1></div><div class="ban info">${I.info}<div>This sample draft has no detail in the mockup. Open <b>#D1042</b> after submitting from the distributor portal.</div></div>`;
+  const po=S.pos.find(p=>p.draftId===d.id);
+  const canCreate = d.status==='ready' || (S.rules.unlockEarly && d.status==='awaiting');
+  const ships=d.check.reduce((s,c)=>s+c.ships,0), build=d.check.reduce((s,c)=>s+c.build,0);
+  const intact = d.check.filter(c=>c.onHand - c.ships >= c.floor).length;
+  return `<div class="ph"><h1><button class="btn" data-go="drafts" aria-label="Back to drafts" style="width:28px;padding:0">${I.back}</button>#${d.id} ${badge('B2B','b-info')} ${statusBadge(d)} ${S.reserved?badge('Inventory reserved — early','b-crit'):badge('Not committing inventory','b-ok')}<span class="sub" style="font-weight:400;font-size:13px">${d.when}</span></h1>
+    <div class="acts"><button class="btn">Send invoice</button>${S.reserved?`<button class="btn" data-act="reserveUndo">Remove reservation</button>`:`<button class="btn btn-c" data-act="reserveAsk">Reserve inventory</button>`}<button class="btn btn-p" data-act="convert" data-id="${d.id}" ${canCreate?'':'disabled'}>Create order</button></div></div>
+  ${d.status==='awaiting'&&po?`<div class="sub" style="text-align:right;margin-top:-8px">Create order unlocks when ${po.id} is marked received${S.rules.unlockEarly?' — or now, because the early-unlock rule is on':''}</div>`:''}
+  ${S.reserved?`<div class="ban crit">${I.warn}<div><b>This is the failure mode.</b> Reserving committed ${d.lines.reduce((s,l)=>s+l.qty,0)} units before production built anything. Open the retail storefront: the burner page now shows out of stock, on parts physically on the shelf. <a href="#" data-act="reserveUndo" style="color:inherit;text-decoration:underline">Remove the reservation</a>.</div></div>`:''}
+  <div class="cols"><div class="l">
+    <div class="card"><div class="hd"><b>Products <span class="sub" style="font-weight:500">· ${d.lines.length} lines · ${d.lines.reduce((s,l)=>s+l.qty,0)} units</span></b>${badge(COMPANY.tier+' pricing')}</div>
+      <div class="tw"><table><thead><tr><th>Product</th><th>SKU</th><th class="r">Qty</th><th class="r">Price</th><th class="r">Total</th></tr></thead><tbody>
+      ${d.lines.map(l=>{const p=prod(l.sku);return `<tr><td>${pcell(p)}</td><td class="mono">${p.sku}</td><td class="r">${l.qty}</td><td class="r">${money(p.dist)}</td><td class="r">${money(l.qty*p.dist)}</td></tr>`}).join('')}
+      </tbody></table></div>
+      <div class="ft" style="display:flex;flex-direction:column;gap:4px"><div class="kv"><span class="sub">Subtotal</span><span>${money(d.total)}</span></div><div class="kv"><span class="sub">Shipping</span><span>To be quoted</span></div><div class="kv"><span class="sub">Tax</span><span>$0.00 · export</span></div><div class="kv" style="font-weight:600;margin-top:4px"><span>Total</span><span>${money(d.total)}</span></div></div>
+    </div>
+
+    <div class="card" style="box-shadow:0 1px 0 rgba(26,26,26,.07),0 0 0 1px var(--line),0 0 0 3px var(--warn-bg)">
+      <div class="hd"><b style="display:flex;align-items:center;gap:8px;color:var(--warn)">${I.guard}<span style="color:var(--text)">Retail floor check</span></b><div style="display:flex;gap:8px"><button class="btn" data-act="rerun" data-id="${d.id}">Re-run check</button>${po?`<button class="btn" data-go="pos">View ${po.id}</button>`:''}</div></div>
+      <div class="tw"><table><thead><tr><th>Product</th><th class="r">Requested</th><th class="r">On hand</th><th class="r">Retail floor</th><th class="r">Ships from stock</th><th class="r">To manufacture</th><th>Result</th></tr></thead><tbody>
+      ${d.check.map(c=>{const p=prod(c.sku);return `<tr><td><span style="font-weight:500">${p.name}</span> <span class="mono sub">${p.sku}</span></td><td class="r">${c.qty}</td><td class="r">${c.onHand}</td><td class="r">${c.floor}</td><td class="r">${c.ships}</td><td class="r" style="font-weight:600">${c.build}</td><td>${c.build>0?badge('Short','b-warn'):badge('Covered','b-ok')}</td></tr>`}).join('')}
+      </tbody></table></div>
+      <div class="ft" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center">
+        <div class="stat"><div><span class="sub">Ships from stock</span><b>${ships} units</b></div><div><span class="sub">To manufacture</span><b>${build} units</b></div><div><span class="sub">Retail floors intact</span><b>${intact} of ${d.check.length}</b></div></div>
+        <div class="sub" style="text-align:right">${po?`${badge(po.id,'b-info')} emailed to production@ · expected 6–8 weeks<br>`:''}Formula: to manufacture = requested − max(0, on hand − retail floor)</div>
+      </div>
+    </div>
+
+    ${S.rules.warnReserve?`<div class="ban warn">${I.warn}<div><b>Don't use "Reserve inventory" on distributor drafts.</b> Reserving commits the stock now and hides it from retail — the exact problem this flow prevents. Leave the draft unreserved until the PO is received. (Try it: the button is live.)</div></div>`:''}
+
+    <div class="card"><div class="hd"><b>Timeline</b></div><div class="pd tl">${S.log.map(e=>`<div class="it"><div class="dot" style="background:${e.who==='Floor Guard'?'#005bd3':e.who==='Kristen'?'#0c5132':'#8a8a8a'}"></div><div><div>${e.text}</div><div class="sub">${e.who} · ${e.t}</div></div></div>`).join('')}</div></div>
+  </div><div class="s">
+    <div class="card pd" style="display:flex;flex-direction:column;gap:10px"><b>Company</b><div><a href="#" style="font-weight:500">${COMPANY.name}</a><div class="sub">Location: ${COMPANY.loc} · 3 buyers</div></div><div style="height:1px;background:var(--line)"></div><div><b style="display:block;margin-bottom:4px">Ship to</b><div class="sub">${COMPANY.ship}</div></div><div style="height:1px;background:var(--line)"></div><div><b style="display:block;margin-bottom:4px">Buyer PO</b><div class="mono">${d.po}</div></div></div>
+    <div class="card pd" style="display:flex;flex-direction:column;gap:8px"><b>Payment terms</b><div class="kv"><span class="sub">Terms</span><span>${COMPANY.terms}</span></div><div class="kv"><span class="sub">Due</span><span>30 days after fulfillment</span></div><div class="kv"><span class="sub">Status</span>${badge('Not yet invoiced')}</div></div>
+    ${po?`<div class="card pd" style="display:flex;flex-direction:column;gap:8px"><b>Production</b><div class="kv"><span class="sub">PO</span><a href="#" data-go="pos">${po.id}</a></div><div class="kv"><span class="sub">Status</span>${po.status==='received'?badge('Received','b-ok'):badge('Sent · in build','b-info')}</div><div class="kv"><span class="sub">Expected</span><span>Oct 29 – Nov 12</span></div>${po.status!=='received'?`<button class="btn btn-p" data-act="receive" data-id="${po.id}" style="margin-top:4px">Mark received (skip ahead)</button>`:''}</div>`:''}
+    <div class="card pd" style="display:flex;flex-direction:column;gap:8px"><b>Tags</b><div style="display:flex;gap:6px;flex-wrap:wrap">${(d.tags||[]).map(t=>badge(t)).join('')}${badge('EU')}</div></div>
+  </div></div>`;
+}
+
+function pagePOs(){
+  const po=S.pos[0];
+  return `<div class="ph"><h1>Production POs <span class="sub" style="font-weight:400;font-size:13px">Floor Guard</span></h1><div class="acts"><button class="btn">Download PDF</button><button class="btn">Resend to production</button>${po&&po.status!=='received'?`<button class="btn btn-p" data-act="receive" data-id="${po.id}">Mark received</button>`:''}</div></div>
+  ${!po?`<div class="card pd"><b>No production POs yet.</b><div class="sub">Submit the distributor order from the portal — Floor Guard raises a PO within minutes for any shortfall.</div><div style="margin-top:10px"><button class="btn btn-p" data-view="portal">Open distributor portal</button></div></div>`:`
+  <div class="card"><div class="hd"><b>${po.id} · Loring production floor</b><div style="display:flex;gap:8px;align-items:center">${po.status==='received'?badge('Received · draft ready','b-ok'):badge('Sent · in build','b-info')}<span class="sub">For draft <a href="#" data-go="draft" data-id="${po.draftId}">#${po.draftId}</a> · ${COMPANY.name}</span></div></div>
+    <div class="tw"><table><thead><tr><th>Product</th><th>SKU</th><th class="r">Ordered by distributor</th><th class="r">Covered from stock</th><th class="r">Build qty</th><th class="r">Received</th><th>Status</th></tr></thead><tbody>
+    ${po.lines.map(l=>{const p=prod(l.sku);return `<tr><td>${pcell(p)}</td><td class="mono">${p.sku}</td><td class="r">${l.ordered}</td><td class="r">${l.covered}</td><td class="r" style="font-weight:600">${l.build}</td><td class="r">${l.received}</td><td>${l.received>=l.build?badge('Received','b-ok'):badge('In build','b-info')}</td></tr>`}).join('')}
+    </tbody></table></div>
+    <div class="ft sub">Only the shortfall is built — the ${po.lines.reduce((s,l)=>s+l.covered,0)} units already on the shelf stay where they are. Received units are added to Loring warehouse inventory and allocated to #${po.draftId} when the draft is converted.</div>
+  </div>
+  <div class="card"><div class="hd"><b>Email sent to production</b></div><div class="pd" style="display:flex;flex-direction:column;gap:12px">
+    <div class="sub" style="display:flex;flex-direction:column;gap:2px"><div><span style="display:inline-block;width:56px">To</span><span style="color:var(--text)">production@loring.com</span></div><div><span style="display:inline-block;width:56px">Cc</span><span style="color:var(--text)">parts@loring.com</span></div><div><span style="display:inline-block;width:56px">Subject</span><span style="color:var(--text);font-weight:500">${po.id} — Build request for distributor order #${po.draftId} (${po.lines.reduce((s,l)=>s+l.build,0)} units, ${po.lines.length} lines)</span></div></div>
+    <div style="border:1px solid var(--line);border-radius:8px;padding:16px;background:var(--surface-2);display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px"><b style="font-size:15px">Purchase order ${po.id}</b><span class="sub">Issued Sep 17, 2026</span></div>
+      <div class="sub">From Loring Parts (Shopify) to Loring Production Floor. Please build the quantities below to fulfil distributor order #${po.draftId} for ${COMPANY.name}, buyer PO ${S.drafts.find(d=>d.id===po.draftId).po}. Requested completion: Oct 29 – Nov 12.</div>
+      <div class="tw"><table><thead><tr><th>SKU</th><th>Description</th><th class="r">Build qty</th></tr></thead><tbody>${po.lines.map(l=>{const p=prod(l.sku);return `<tr><td class="mono">${p.sku}</td><td>${p.name}, ${p.variant}</td><td class="r">${l.build}</td></tr>`}).join('')}</tbody></table></div>
+      <div class="sub">Reply to this email or mark received in Shopify › Floor Guard when complete. Attachment: ${po.id}.pdf</div>
+    </div></div></div>`}`;
+}
+
+function pageOrder(){
+  const o=S.orders[0]; if(!o) return pageDrafts();
+  return `<div class="ph"><h1><button class="btn" data-go="drafts" aria-label="Back" style="width:28px;padding:0">${I.back}</button>${o.id} ${badge('B2B','b-info')} ${badge('Payment pending · Net 30','b-att')} ${badge('Unfulfilled','b-att')}<span class="sub" style="font-weight:400;font-size:13px">from draft <a href="#" data-go="draft" data-id="${o.draftId}">#${o.draftId}</a></span></h1><div class="acts"><button class="btn">Print packing slip</button><button class="btn btn-p">Fulfill items</button></div></div>
+  <div class="ban ok">${I.check}<div><b>Inventory committed now, not at submission.</b> ${o.check.reduce((s,c)=>s+c.build,0)} built units plus ${o.check.reduce((s,c)=>s+c.ships,0)} from stock were allocated to this order at conversion. Retail availability was never reduced while the draft waited.</div></div>
+  <div class="cols"><div class="l">
+    <div class="card"><div class="hd"><b>${badge('Unfulfilled','b-att')} ${o.lines.length} items · ${o.lines.reduce((s,l)=>s+l.qty,0)} units</b><span class="sub">Loring warehouse</span></div>
+      <div class="tw"><table><thead><tr><th>Product</th><th>SKU</th><th class="r">Qty</th><th class="r">From stock</th><th class="r">From production</th><th class="r">Total</th></tr></thead><tbody>
+      ${o.check.map(c=>{const p=prod(c.sku);return `<tr><td>${pcell(p)}</td><td class="mono">${p.sku}</td><td class="r">${c.qty}</td><td class="r">${c.ships}</td><td class="r">${c.build}</td><td class="r">${money(c.qty*p.dist)}</td></tr>`}).join('')}
+      </tbody></table></div>
+      <div class="ft" style="display:flex;flex-direction:column;gap:4px"><div class="kv"><span class="sub">Subtotal</span><span>${money(o.total)}</span></div><div class="kv"><span class="sub">Freight · DAP Hamburg</span><span>$3,940.00</span></div><div class="kv" style="font-weight:600;margin-top:4px"><span>Total</span><span>${money(o.total+3940)}</span></div></div></div>
+    <div class="card"><div class="hd"><b>Retail floor after conversion</b></div><div class="tw"><table><thead><tr><th>Product</th><th class="r">Retail floor</th><th class="r">Committed to ${o.id}</th><th class="r">Available to retail now</th><th>Floor</th></tr></thead><tbody>
+      ${o.check.map(c=>{const p=prod(c.sku);return `<tr><td>${p.name} <span class="mono sub">${p.sku}</span></td><td class="r">${p.floor}</td><td class="r">${c.qty}</td><td class="r" style="font-weight:600">${p.onHand}</td><td>${p.onHand>=p.floor?badge('Held','b-ok'):badge('Breached','b-crit')}</td></tr>`}).join('')}
+    </tbody></table></div></div>
+  </div><div class="s">
+    <div class="card pd" style="display:flex;flex-direction:column;gap:8px"><b>Company</b><div><a href="#" style="font-weight:500">${o.company}</a><div class="sub">Hamburg · buyer PO ${o.po}</div></div></div>
+    <div class="card pd" style="display:flex;flex-direction:column;gap:8px"><b>Accounting</b><div class="kv"><span class="sub">QuickBooks</span>${badge('Synced · Webgility','b-ok')}</div><div class="kv"><span class="sub">Invoice</span><span class="mono">INV-20931</span></div></div>
+  </div></div>`;
+}
+
+function pageFloors(){
+  return `<div class="ph"><div><h1>Retail floors <span class="sub" style="font-weight:400;font-size:13px">Floor Guard</span></h1><div class="sub">The minimum retail stock protected per variant. Distributor orders are netted against everything above this line. Edit a floor, then re-run the check on a draft.</div></div><div class="acts"><button class="btn">Import CSV</button><button class="btn btn-p" data-act="toast" data-msg="Floors saved">Save</button></div></div>
+  <div class="cols"><div class="l">
+    <div class="card"><div class="tw"><table><thead><tr><th>Product · variant</th><th>SKU</th><th class="r">On hand</th><th class="r">Retail floor</th><th class="r">Lead time</th><th>Stored as</th><th>Status</th></tr></thead><tbody>
+    ${S.products.map(p=>`<tr><td>${pcell(p)}</td><td class="mono">${p.sku}</td><td class="r">${p.onHand}</td><td class="r"><input class="num" type="number" min="0" value="${p.floor}" data-floor="${p.sku}" aria-label="Retail floor ${p.sku}"></td><td class="r">${p.lead}</td><td class="mono sub">variant.floor_guard.retail_floor</td><td>${p.onHand<p.floor?badge(`Below floor · reorder ${p.floor-p.onHand}`,'b-warn'):p.onHand===p.floor?badge('At floor','b-att'):badge('Above floor','b-ok')}</td></tr>`).join('')}
+    </tbody></table></div><div class="ft sub" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><span>Showing ${S.products.length} of 214 variants</span><span>Floors live on the variant, so revisions and voltages are protected separately</span></div></div>
+  </div><div class="s">
+    <div class="card pd" style="display:flex;flex-direction:column;gap:14px"><b>Rules</b>
+      ${rule('manual','Manual approval of distributor drafts','Always on. Floor Guard never converts a draft to an order.',true)}
+      ${rule('autoPO','Auto-send production PO for shortfall','On draft submission, within 5 minutes.')}
+      ${rule('warnReserve','Warn staff on "Reserve inventory"','Shows a warning banner on every B2B draft.')}
+      ${rule('lowStock','Low-stock reorder PO','When retail stock drops below floor, propose a PO for the gap.')}
+      ${rule('unlockEarly','Unlock Create order before PO received','Off by default. Staff can override per draft.')}
+    </div>
+    <div class="card pd" style="display:flex;flex-direction:column;gap:10px"><b>Production floor</b><label class="sub" for="pe">PO recipient</label><input id="pe" class="txt" value="production@loring.com"><label class="sub" for="cc">Cc</label><input id="cc" class="txt" value="parts@loring.com"><label class="sub" for="lt">Default lead time</label><input id="lt" class="txt" value="6–8 weeks"></div>
+    <div class="card pd" style="display:flex;flex-direction:column;gap:6px"><b>Formula</b><div class="mono" style="background:var(--page);border-radius:8px;padding:10px 12px">to_manufacture = requested − max(0, on_hand − retail_floor)</div></div>
+  </div></div>`;
+}
+function rule(k,t,d,locked){ return `<div style="display:flex;gap:12px;align-items:flex-start"><button class="tog ${S.rules[k]?'':'off'}" role="switch" aria-checked="${S.rules[k]}" aria-label="${t}" ${locked?'disabled':`data-rule="${k}"`}></button><div><b>${t}</b><div class="sub">${d}</div></div></div>`; }
+
+function pageFlow(){
+  const node=(kind,color,t,d)=>`<div class="node"><div class="nt" style="background:${color}">${kind}</div><div class="nb"><b>${t}</b><div class="sub mono" style="font-family:${d.startsWith('"')||d.includes('@')||d.includes('.')?'ui-monospace,Menlo,monospace':'inherit'}">${d}</div></div></div>`;
+  const ar=`<div class="arrow">${I.arrow}</div>`;
+  const wf=(title,note,nodes)=>`<div class="card"><div class="hd"><b style="display:flex;gap:10px;align-items:center">${title} ${badge('On','b-ok')}</b><span class="sub">${note}</span></div><div class="pd flowrow">${nodes.join(ar)}</div></div>`;
+  return `<div class="ph"><div><h1>Workflows</h1><div class="sub">Shopify Flow · no code, included on every plan. Floor Guard does the math; Flow does the routing.</div></div><div class="acts"><button class="btn btn-p">Create workflow</button></div></div>
+  ${wf('Distributor draft submitted','Ran '+S.pos.length+' times in this demo',[node('Trigger','#5c5f62','Draft order created','Shopify'),node('Condition','#b98900','Placed by a company','draftOrder.purchasingEntity is Company'),node('Action','#005bd3','Add draft order tags','B2B, awaiting-po'),node('Action · Floor Guard','#5e4200','Run retail floor check','Sends production PO for any shortfall'),node('Action','#005bd3','Send internal email','parts@loring.com')])}
+  ${wf('Production PO received','',[node('Trigger · Floor Guard','#5e4200','PO marked received','All lines complete'),node('Action','#005bd3','Replace draft tag','awaiting-po → po-received'),node('Action','#005bd3','Send internal email','"Draft ready to convert"'),`<div class="node" style="opacity:.55"><div class="nt" style="background:#8a8a8a">Not automated</div><div class="nb"><b>Convert draft to order</b><div class="sub">Always a person. By design.</div></div></div>`])}
+  ${wf('Retail stock below floor','Replaces the weekly report Kristen runs today',[node('Trigger','#5c5f62','Inventory quantity changed','Product variant'),node('Condition','#b98900','Below retail floor','available < variant.floor_guard.retail_floor'),node('Action · Floor Guard','#5e4200','Propose reorder PO','Gap to floor, batched daily'),node('Action','#005bd3','Send internal email','purchasing@loring.com')])}`;
+}
+
+/* ---------------- storefronts ---------------- */
+function portal(){
+  const lines=S.products.filter(p=>S.cart[p.sku]!==undefined);
+  const sub=lines.reduce((s,p)=>s+(S.cart[p.sku]||0)*p.dist,0);
+  const units=lines.reduce((s,p)=>s+(S.cart[p.sku]||0),0);
+  const done=S.drafts.find(d=>d.id==='D1042');
+  return `<div class="sf">
+    <div class="sf-strip" style="background:var(--sf-accent);color:#e9efe9"><b>Purchasing for ${COMPANY.name} · ${COMPANY.loc}</b><span style="opacity:.7">·</span><span>${COMPANY.terms} terms</span><span style="opacity:.7">·</span><span>Price list: ${COMPANY.tier}</span></div>
+    <div class="sf-hd"><div class="lg">LORING <span>Parts</span></div><nav><a href="#">Roasters</a><a href="#" class="on">Parts</a><a href="#">Support</a><a href="#">My company</a></nav><div style="display:flex;gap:16px;align-items:center;color:var(--sf-sub);font-size:13px"><span>Signed in as buyer</span>${I.cart}</div></div>
+    <div class="sf-main">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px"><h1 style="margin:0;font-size:28px;font-weight:700">Quick order</h1><span style="color:var(--sf-sub);font-size:13px">Change any quantity — the floor check on the draft will reflect it</span></div>
+        <div class="tw"><table><thead><tr><th>Product</th><th>SKU</th><th class="r">Your price</th><th class="r">Qty</th><th class="r">Line total</th></tr></thead><tbody>
+        ${lines.map(p=>`<tr><td><div style="display:flex;align-items:center;gap:12px"><div class="tile"></div><div><div style="font-weight:600">${p.name}</div><div style="color:var(--sf-sub);font-size:13px">${p.variant}</div></div></div></td><td class="mono">${p.sku}</td><td class="r">${money(p.dist)}</td><td class="r"><input class="qty" type="number" min="0" value="${S.cart[p.sku]}" data-qty="${p.sku}" aria-label="Quantity ${p.sku}"></td><td class="r" style="font-weight:600">${money((S.cart[p.sku]||0)*p.dist)}</td></tr>`).join('')}
+        </tbody></table></div>
+      </div>
+      <aside style="width:360px;flex-shrink:0;display:flex;flex-direction:column;gap:16px">
+        <div class="box"><div style="font-size:18px;font-weight:700">Order summary</div>
+          <div class="kv" style="color:#4a4a4a"><span>${lines.length} lines · ${units} units</span><span>${money(sub)}</span></div>
+          <div class="kv" style="color:#4a4a4a"><span>Freight</span><span>Quoted on approval</span></div>
+          <div class="kv" style="color:#4a4a4a"><span>Payment</span><span>${COMPANY.terms} · after fulfillment</span></div>
+          <div style="height:1px;background:var(--sf-line)"></div>
+          <div class="kv" style="font-size:18px;font-weight:700"><span>Subtotal</span><span>${money(sub)}</span></div>
+          <label for="po" style="font-size:13px;font-weight:600">Your PO number</label><input id="po" class="txt" value="${S.buyerPO}" data-po>
+          ${done?`<button class="sf-btn" disabled>Submitted · awaiting Loring approval</button><button class="sf-btn o" data-go="draft" data-id="D1042">See it in Shopify admin</button>`:`<button class="sf-btn" data-act="submit" ${units?'':'disabled'}>Submit for approval</button>`}
+          <div style="font-size:13px;color:#4a4a4a;line-height:18px;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--sf-accent);flex-shrink:0">${I.info}</span><span>Distributor orders are reviewed by Loring before they're confirmed. Nothing is charged, and no stock is allocated, until we approve.</span></div>
+        </div>
+        <div class="box" style="padding:20px 24px;gap:8px;font-size:13px;color:#4a4a4a"><b style="color:var(--sf-text)">Ship to</b><div>${COMPANY.ship}</div><a href="#" style="color:#6b2a0f;font-weight:600">Change location</a></div>
+      </aside>
+    </div></div>`;
+}
+
+function retail(){
+  const p=prod('BRN-S35-A');
+  const st=p.onHand<=0?['out','Out of stock — notify me when available']:p.onHand<p.floor?['low',`Low stock — only ${p.onHand} left`]:['in',`In stock — ${p.onHand} available · ships in 1–2 business days`];
+  return `<div class="sf">
+    <div class="sf-strip" style="background:#f4f1ea;color:#4a4a4a">Free shipping on US parts orders over $250</div>
+    <div class="sf-hd"><div class="lg">LORING <span>Parts</span></div><nav><a href="#">Roasters</a><a href="#" class="on">Parts</a><a href="#">Support</a></nav>${I.cart}</div>
+    <div class="sf-main" style="max-width:1100px;margin:0 auto;width:100%">
+      <div style="flex:1;min-width:0;height:420px;border-radius:10px;background:var(--sf-tile);display:flex;align-items:center;justify-content:center;color:#8a8378;font-size:13px">[Product photo]</div>
+      <div style="width:420px;flex-shrink:0;display:flex;flex-direction:column;gap:20px">
+        <div style="font-size:13px;color:var(--sf-sub)">Parts / Burners / Burner assembly S35</div>
+        <div><h1 style="margin:0 0 6px;font-size:28px;font-weight:700">Burner assembly — S35</h1><div style="color:var(--sf-sub);font-size:13px">SKU ${p.sku} · 208V</div><div style="font-size:22px;font-weight:700;margin-top:8px">${money(p.retail)}</div></div>
+        <div class="stock ${st[0]}">${st[0]==='in'?I.check:I.warn}<span>${st[1]}</span></div>
+        <div style="display:flex;gap:12px"><input class="qty" type="number" value="1" min="1" aria-label="Quantity" style="height:48px"><button class="sf-btn" ${p.onHand<=0?'disabled':''} data-act="toast" data-msg="Added to cart">Add to cart</button></div>
+        <div style="font-size:13px;color:var(--sf-sub);line-height:18px">This page reads live from the same inventory pool the distributor is ordering from. Switch to the admin, move the draft along, and come back — the number above only changes when stock really moves.</div>
+        <div style="border-top:1px solid var(--sf-line);padding-top:16px;display:flex;flex-direction:column;gap:6px;font-size:13px">
+          ${S.products.slice(0,5).map(q=>`<div class="kv"><span>${q.name} <span style="color:var(--sf-sub)">${q.variant}</span></span><span style="font-weight:600;color:${q.onHand<=0?'#8e1f0b':q.onHand<q.floor?'#6b4a00':'#1e5c2e'}">${q.onHand<=0?'Out of stock':q.onHand+' available'}</span></div>`).join('')}
+        </div>
+      </div>
+    </div></div>`;
+}
+
+/* ---------------- shell ---------------- */
+function live(){
+  const p=prod('BRN-S35-A'); const d=S.drafts.find(x=>x.id==='D1042');
+  const phase = !d?'Before the distributor orders':d.status==='awaiting'?(S.reserved?'Draft reserved — this is the bug':'Draft awaiting · 200 requested'):d.status==='ready'?'PO received · not yet approved':'Order created · committed';
+  return `<div class="live ${S.flash?'flash':''}" aria-live="polite"><div class="t"><span>Retail storefront right now</span><span class="d">${phase}</span></div><div>Burner assembly S35</div><div class="big" style="color:${p.onHand<=0?'#ff8a80':p.onHand<p.floor?'#ffd6a4':'#a0e3c4'}">${p.onHand<=0?'Out of stock':p.onHand+' available'}</div><div class="d">Retail floor ${p.floor} · draft in flight: ${d?d.lines.find(l=>l.sku==='BRN-S35-A')?.qty??0:0} units, ${S.reserved?'committed early':d&&d.status==='converted'?'committed':'uncommitted'}</div></div>`;
+}
+function modal(){
+  if(S.modal!=='reserve') return '';
+  return `<div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><div class="box"><h2 id="mt">Reserve inventory for this draft?</h2><div>Shopify will commit every line now. The 200 burners come off retail availability immediately, weeks before production has built anything. This is the exact scenario Loring described: distributor orders overnight, retail wakes up to an empty storefront.</div><div class="sub">Floor Guard's guard rule is on, which is why you're seeing this. In production this is an SOP, not a hard block — Shopify doesn't let apps disable the native button.</div><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" data-act="close">Cancel</button><button class="btn btn-c" data-act="reserveDo">Reserve anyway (see what happens)</button></div></div></div>`;
+}
+function render(){
+  const app=document.getElementById('app');
+  const pages={home:pageHome,drafts:pageDrafts,draft:pageDraft,pos:pagePOs,order:pageOrder,floors:pageFloors,flow:pageFlow};
+  let inner = S.view==='portal'?portal():S.view==='retail'?retail():adminShell((pages[S.page]||pageHome)());
+  const seg=v=>`<button class="${S.view===v?'on':''}" data-view="${v}">${v==='portal'?'Distributor portal':v==='retail'?'Retail storefront':'Shopify admin'}</button>`;
+  app.innerHTML=`<div class="frame"><div class="switch"><div class="who">Loring · distributor order flow — interactive mockup by IT-Geeks, Shopify Platinum Partner</div><div class="seg">${seg('portal')}${seg('retail')}${seg('admin')}</div></div>${inner}</div>${live()}${modal()}${S.toast?`<div class="toast">${S.toast}</div>`:''}`;
+  S.flash=false;
+}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-view],[data-go],[data-act],[data-rule]'); if(!t) return;
+  if(t.tagName==='A') e.preventDefault();
+  if(t.dataset.view) A.view(t.dataset.view);
+  else if(t.dataset.go) A.go(t.dataset.go, t.dataset.id);
+  else if(t.dataset.rule) A.rule(t.dataset.rule);
+  else if(t.dataset.act==='toast') A.toast(t.dataset.msg);
+  else if(t.dataset.act && A[t.dataset.act]) A[t.dataset.act](t.dataset.id);
+  render(); window.scrollTo({top:0});
+});
+document.addEventListener('input',e=>{
+  const el=e.target;
+  if(el.dataset.qty){ A.qty(el.dataset.qty, el.value); const row=el.closest('tr'); const p=prod(el.dataset.qty); row.lastElementChild.textContent=money((S.cart[p.sku]||0)*p.dist); }
+  if(el.dataset.floor){ A.floor(el.dataset.floor, el.value); }
+  if(el.hasAttribute('data-po')) A.po(el.value);
+});
+document.addEventListener('change',e=>{ if(e.target.dataset.qty||e.target.dataset.floor) render(); });
+render();
+</script>
+</body>
+</html>
